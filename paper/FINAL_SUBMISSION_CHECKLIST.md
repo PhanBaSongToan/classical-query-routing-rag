@@ -39,7 +39,7 @@ supervisor, workshop, conference, or journal.
 - [x] Record the 54-test result.
 - [x] Add the final dataset fingerprint produced by the current checkout.
 - [x] Record the final source/artifact commit hash in
-  `REPRODUCIBILITY_MANIFEST.md` (`6eeaf43fecd7e4146e019799aa87191b0c5d197f`).
+  `REPRODUCIBILITY_MANIFEST.md` (`a682822efbb06dd0618eade2c4517009e5f225de`).
   The later metadata-only manifest commit is reported by `git rev-parse HEAD`.
 - [x] Record the provisional base commit, working-tree state, lockfile, and
   build command in `REPRODUCIBILITY_MANIFEST.md`.

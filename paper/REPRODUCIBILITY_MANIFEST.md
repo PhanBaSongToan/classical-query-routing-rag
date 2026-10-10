@@ -5,7 +5,7 @@ build. The working tree was intentionally not committed by the assistant.
 
 | Item | Value |
 |---|---|
-| Final artifact commit | `6eeaf43fecd7e4146e019799aa87191b0c5d197f` (paper, figures, paired-ablation code/report) |
+| Final artifact commit | `a682822efbb06dd0618eade2c4517009e5f225de` (paper, figures, paired-ablation code/report) |
 | Working tree | LaTeX auxiliary/log files may change after compilation; source/artifact commit is recorded above |
 | Python | 3.14.5 |
 | Dataset records | 7,727 |
