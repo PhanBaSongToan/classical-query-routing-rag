@@ -1,0 +1,168 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\title{Classical Query Routing for Adaptive Retrieval-Augmented Generation: Reproducibility, Robustness, and Cost-Aware Evaluation}
+
+\author{\IEEEauthorblockN{Phan Ba Song Toan}
+\IEEEauthorblockA{Independent Researcher\\
+Vietnam\\
+Email: \texttt{phanbasongtoan@example.com}}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Selecting an appropriate retrieval strategy for each query can reduce the cost of retrieval-augmented generation (RAG), but reported routing results are difficult to interpret when evaluation details are underspecified. This work audits and extends a classical query-routing benchmark on RAGRouter-Bench. We first reproduce the query-side setting of the reference study using the public four-domain dataset and examine the effect of cross-validation ordering. We then evaluate an extended non-deep-learning benchmark with lexical, character, structural, Naive Bayes support-vector, dimensionality-reduced, boosting, and out-of-fold stacking components. The selected extended ensemble obtains 0.9521 accuracy and 0.9478 macro-F1 under ten-seed shuffled five-fold evaluation, with an estimated 28.76\% routing-cost saving under the benchmark's illustrative cost model. Robustness results show that source-order evaluation reduces accuracy to 0.8455, while leave-one-domain-out evaluation reduces it to 0.6406. These findings indicate that the extension improves the reported query-side baseline under its declared protocol, but that cross-validation ordering and domain shift materially affect conclusions. The accompanying implementation is designed for auditable reproduction rather than end-to-end answer generation.
+\end{abstract}
+
+\begin{IEEEkeywords}
+adaptive RAG, query routing, classical machine learning, reproducibility, robustness, leakage audit
+\end{IEEEkeywords}
+
+\section{Introduction}
+Retrieval-augmented generation systems can choose among retrieval paradigms with different quality and token-cost profiles. A lightweight router can classify an incoming query and select a cheaper strategy when the query does not require the most expensive retrieval procedure. The reference study by Bansal and Agarwal evaluates this idea on RAGRouter-Bench using query text alone and reports 93.2\% accuracy and 0.928 macro-F1 for TF--IDF with an SVM \cite{bansal2026}. It also reports 28.1\% simulated savings relative to always using IterativeRAG.
+
+The reference result is useful as a baseline, but the published description leaves several implementation choices insufficiently specified, including cross-validation ordering, random seeds, and the exact operational interpretation of the reported protocol. These choices matter because the benchmark contains four domains with systematic lexical structure. A reproduction therefore needs to distinguish the reported number from the result obtained under a fully specified protocol.
+
+This paper has two goals. First, it audits the reproducibility of the classical TF--IDF/SVM baseline. Second, it evaluates a broader, strictly non-deep-learning benchmark designed to remain leakage-aware and auditable. The contributions are:
+\begin{enumerate}
+    \item a controlled reproduction audit that separates order-preserving, shuffled, grouped, and domain-held-out evaluation;
+    \item an extended benchmark covering lexical, character, structural, NB--SVM, boosting, and out-of-fold stacking components;
+    \item a robustness analysis quantifying sensitivity to source order, normalized-query groups, structural templates, and unseen domains; and
+    \item an openly inspectable implementation and prediction artifact for demonstrating the query-to-RAG-strategy interface.
+\end{enumerate}
+
+The paper does not claim an exact numerical reproduction of the reference result. Instead, it reports which conclusions are stable, which depend on protocol details, and how the extended router performs under an explicitly declared evaluation design.
+
+\section{Related Work}
+Adaptive retrieval methods route queries according to estimated complexity or retrieval need. Adaptive-RAG uses a learned complexity classifier to select among retrieval behaviors \cite{jeong2024}. RAGRouter-Bench provides a complementary setting in which queries from four corpora are annotated with single-hop, multi-hop, or summarization types and evaluated against multiple RAG paradigms \cite{wang2026}. The reference study establishes query-side classical baselines on this benchmark \cite{bansal2026}.
+
+This work focuses on reproducibility and classical extension. It does not replace the benchmark's corpus-side routing problem with a claim that query text alone is sufficient. Rather, the robustness experiments make the boundary of query-only routing explicit.
+
+\section{Reference Setting and Reproduction Audit}
+\subsection{Dataset and labels}
+RAGRouter-Bench contains 7,727 queries from MuSiQue, QuALITY, UltraDomain legal, and GraphRAG-Bench medical. The canonical target labels are \texttt{single\_hop}, \texttt{multi\_hop}, and \texttt{summary}; they correspond to factual, reasoning, and summarization query types, respectively. The label distribution is imbalanced, so accuracy alone is insufficient.
+
+\subsection{Reference protocol}
+The reference study evaluates TF--IDF, MiniLM embeddings, and structural features with five classifier families under five-fold stratified cross-validation. Its best reported configuration is TF--IDF with an SVM, at 0.932 accuracy and 0.928 macro-F1. Its cost simulation maps single-hop queries to NaiveRAG (1.4$\times$), multi-hop queries to HybridRAG (2.8$\times$), and summary queries to IterativeRAG (3.5$\times$) \cite{bansal2026}.
+
+\subsection{Audit principle}
+The reproduction audit treats the published protocol as incomplete when it does not specify the ordering and randomization required to recreate a split. We therefore report protocol-specific values instead of selecting one favorable seed. The audit also checks for duplicate and structural-template overlap and evaluates leave-one-domain-out transfer. These checks answer different deployment questions and are not combined into a single score.
+
+\subsection{Official reproduction result}
+Using the public Hugging Face release, the downloaded dataset had 7,727 records
+and SHA-256 fingerprint prefix \texttt{c3566f9dca7c}; the full fingerprint is
+preserved in the machine-readable audit report.
+We executed the documented raw-label protocol with order-preserving \texttt{StratifiedKFold(n\_splits=5, shuffle=False)}, word TF--IDF n-grams of order $(1,2)$, \texttt{min\_df=2}, sublinear term frequency, and an RBF SVM. The pooled result was 0.807558 accuracy and 0.806758 macro-F1, compared with the reported 0.932 and 0.928. Thus the reproduction is not numerically exact: the absolute gaps are 12.444 and 12.124 percentage points, respectively. The discrepancy is recorded as an audit finding rather than hidden by replacing the official protocol with a favorable split.
+
+\begin{table}[t]
+\centering
+\caption{Official raw-label reproduction sweep under order-preserving five-fold CV.}
+\label{tab:official-sweep}
+\begin{tabular}{lcc}
+\toprule
+Configuration & Accuracy & Macro-F1 \\
+\midrule
+TF--IDF + SVM & 0.8076 & 0.8068 \\
+TF--IDF + logistic regression & 0.8050 & 0.8040 \\
+TF--IDF + random forest & 0.8232 & 0.8241 \\
+TF--IDF + k-nearest neighbors & 0.7300 & 0.7392 \\
+Structural + logistic regression & 0.7386 & 0.7288 \\
+Structural + SVM & 0.7660 & 0.7621 \\
+Structural + random forest & 0.7387 & 0.7279 \\
+Structural + k-nearest neighbors & 0.7334 & 0.7290 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Extended Classical Router}
+The extension is restricted to non-deep-learning components. Query text is transformed with word and character n-grams, documented structural indicators, NB--SVM ratios, and a retained nested representation. Candidate classifiers include linear support-vector machines, complementary Naive Bayes, ridge and logistic models, fixed-size boosting models, and an out-of-fold stacking classifier. Hyperparameter grids are fixed before execution.
+
+The selected ensemble is a logistic meta-model trained only on inner out-of-fold predictions from four base components: a word/character structural LinearSVC, a per-domain NB--SVM LinearSVC, a word n-gram Complement Naive Bayes model, and a structural SVD LightGBM model. The final selection is global and uses the repeated-CV summary rather than an in-sample score.
+
+For a predicted label $\hat y$, the simulated route cost is
+\begin{equation}
+c(\hat y) \in \{1.4, 2.8, 3.5\},
+\end{equation}
+and savings relative to always using IterativeRAG are
+\begin{equation}
+S = 100\left(1 - \frac{\sum_i c(\hat y_i)}{3.5N}\right).
+\end{equation}
+These are illustrative relative costs, not measured API billing or answer-quality losses.
+
+\section{Experimental Design}
+Every selectable candidate is evaluated using ten shuffled five-fold seeds: 0, 1, 2, 3, 4, 13, 21, 42, 77, and 100. Preprocessing, feature selection, dimensionality reduction, NB ratios, and meta-model fitting remain fold-local. Screen-only configurations are not eligible for final selection. The benchmark contains 102 valid configurations, of which 25 receive the full repeated evaluation.
+
+We report accuracy, macro-F1, per-class recall, under-routing, simulated savings, and robustness results. Under-routing denotes predictions that send a query to a cheaper route than the target-type mapping; it is treated as a risk indicator rather than an optimization target by itself.
+
+\section{Results}
+\subsection{Main performance}
+Table~\ref{tab:main} compares the reference result with the extended selections. The comparison is descriptive: the reference and extended values are not claimed to be paired measurements because their candidate spaces and protocols differ.
+
+\begin{table}[t]
+\centering
+\caption{Reference, official reproduction, and extended routing results.}
+\label{tab:main}
+\begin{tabular}{lccc}
+\toprule
+Configuration & Accuracy & Macro-F1 & Savings \\
+\midrule
+Reference TF--IDF + SVM & 0.9320 & 0.9280 & 28.10\% \\
+Official order-preserving TF--IDF + SVM & 0.8076 & 0.8068 & 30.46\% \\
+Extended best single & 0.9481 & 0.9434 & 28.61\% \\
+Extended OOF ensemble & 0.9521 & 0.9478 & 28.76\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The selected ensemble has per-class recall of 0.9493 for single-hop, 0.9605 for multi-hop, and 0.9310 for summary queries. Its under-routing rate is 0.0252. The cost-quality constrained router obtains 0.9260 accuracy, 0.9206 macro-F1, 27.81\% savings, and 0.0234 under-routing; its lower savings are accepted because the selection retains the declared quality and risk constraints.
+
+\subsection{Robustness}
+Table~\ref{tab:stress} shows that evaluation protocol substantially changes the apparent performance. Source-order five-fold evaluation obtains 0.8455 accuracy and 0.8448 macro-F1. Grouping normalized queries produces 0.9453 accuracy and 0.9413 macro-F1, while grouping structural templates produces 0.9436 accuracy and 0.9393 macro-F1. Leave-one-domain-out evaluation obtains 0.6406 accuracy and 0.6729 macro-F1, with under-routing increasing to 0.2579.
+
+\begin{table}[t]
+\centering
+\caption{Stress evaluation of the selected extended ensemble.}
+\label{tab:stress}
+\begin{tabular}{lccc}
+\toprule
+Protocol & Accuracy & Macro-F1 & Under-routing \\
+\midrule
+Shuffled repeated CV & 0.9521 & 0.9478 & 0.0252 \\
+Source-order 5-fold & 0.8455 & 0.8448 & 0.0958 \\
+Normalized-query grouped & 0.9453 & 0.9413 & 0.0252 \\
+Template grouped & 0.9436 & 0.9393 & 0.0263 \\
+Leave-one-domain-out & 0.6406 & 0.6729 & 0.2579 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The grouped results are only modestly below shuffled evaluation, so direct duplicate or template overlap is not sufficient to explain the full shuffle effect. The much larger leave-one-domain-out drop indicates that the router learns domain-specific signals and should not be interpreted as a domain-independent query-complexity estimator.
+
+\section{Discussion}
+The extended ensemble improves the numerical result of the reference baseline under its declared repeated shuffled protocol. However, this improvement should not be interpreted as a controlled head-to-head gain over the paper's SVM. A strict comparison would require the same folds, seeds, tokenization, candidate-selection rule, and preprocessing for both systems. The present evidence supports a narrower conclusion: a broader classical model family can perform strongly on this benchmark, while the magnitude of the gain depends on evaluation design.
+
+The audit also changes how the reported cost saving should be interpreted. A higher saving can be obtained by routing more queries to cheap paradigms, even when this harms complex-query coverage. The project therefore reports savings jointly with macro-F1, per-class recall, and under-routing. The cost model remains illustrative and does not measure end-to-end RAG quality or real token billing.
+
+\section{Limitations and Reproducibility}
+The study is limited to four domains and query-side features. It does not execute complete retrieval and answer-generation pipelines, and it does not establish that the recommended paradigm is optimal for every corpus. Leave-one-domain-out results show that out-of-domain transfer remains difficult. The boosting models use conservative fixed sizes, and the simulated cost weights are not observed deployment costs. Finally, the published reference protocol does not expose enough detail to identify one exact implementation from the paper alone.
+
+Several issues must be resolved before making a strong comparative claim. The extended router and the reference baseline should be rerun on identical folds, seeds, preprocessing, and model-selection rules, followed by paired confidence intervals or a paired permutation test. A predeclared ablation should isolate word features, character features, structural features, NB--SVM ratios, boosting, and stacking. The repository should also preserve the exact commit, dataset fingerprint, environment lockfile, and final report manifest used for every table. These are reporting requirements, not missing evidence that can be filled with post-hoc favorable runs.
+
+The paper should be read as a reproducibility and robustness study rather than as evidence of production-level RAG cost reduction. The simulated savings do not measure latency, token billing, retrieval quality, answer quality, or safety. The current artifact classifies query text and returns a route recommendation; it does not validate the downstream RAG system selected by that recommendation.
+
+The accompanying repository contains the source implementation, benchmark reports, tests, and a saved prediction model. The dashboard is an interface over the existing prediction API; it does not retrain the model or change its routing logic.
+
+\section{Conclusion}
+This paper presented an auditable reproduction audit and an extended classical benchmark for query routing in adaptive RAG. The reference TF--IDF/SVM result could not be identified exactly from the public methodology, and its apparent performance is sensitive to cross-validation ordering. Under a fully declared repeated shuffled protocol, the extended OOF ensemble achieved 0.9521 accuracy and 0.9478 macro-F1 with approximately 28.76\% simulated savings. Robustness experiments show that source order and domain shift materially affect performance. The main conclusion is therefore methodological as well as empirical: lightweight query routers should be compared with explicit split definitions, leakage controls, and domain-transfer tests rather than with a single underspecified cross-validation number.
+
+\section*{Acknowledgment}
+The author thanks the developers of RAGRouter-Bench and the authors of the reference study for making the benchmark and baseline description publicly available.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

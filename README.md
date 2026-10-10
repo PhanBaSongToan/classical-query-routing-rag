@@ -1,17 +1,18 @@
-# LLM Semantic Router
+# Classical Query Routing for Adaptive RAG
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-latest-orange.svg)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/status-in--progress-yellow.svg)](#course-learning-outcomes-clos-and-progress)
+[![Status](https://img.shields.io/badge/status-in--progress-yellow.svg)](#installation--usage)
 
-An intelligent machine learning system designed to classify user prompts into distinct tiers, routing them to either local small language models or large cloud-based APIs to optimize for cost, latency, and performance.
+An auditable classical query router for selecting retrieval strategies in
+retrieval-augmented generation systems while tracking quality, robustness, and
+simulated cost.
 
 ---
 
 ## 📋 Table of Contents
 - [Problem Statement](#-problem-statement)
 - [Dataset](#-dataset)
-- [Course Learning Outcomes (CLOs) and Progress](#-course-learning-outcomes-clos-and-progress)
 - [Project Structure](#-project-structure)
 - [Installation & Usage](#-installation--usage)
 - [Team Members](#-team-members)
@@ -43,23 +44,6 @@ The project utilizes a cleaned version of the **LMSYS Chatbot Arena** dataset.
 
 ---
 
-## 📈 Course Learning Outcomes (CLOs) and Progress
-
-| CLO | Description | Status |
-|-----|-------------|--------|
-| CLO1 | Data retrieval from SQL, NoSQL, APIs, Cloud | ✅ Done |
-| CLO2 | Feature selection & engineering | ✅ Done |
-| CLO3 | Outlier detection & handling | ⏳ Next |
-| CLO4 | Supervised model training | ⏳ Pending |
-| CLO5 | Model evaluation & error metrics | ⏳ Pending |
-| CLO6 | Handle unbalanced classes | ⏳ Pending |
-| CLO7 | Explain unsupervised learning approaches | ⏳ Pending |
-| CLO8 | Explain curse of dimensionality | ⏳ Pending |
-| CLO9 | Clustering & dimensionality reduction | ⏳ Pending |
-| CLO10 | Mini capstone final report & presentation | ⏳ Pending |
-
----
-
 ## 📂 Project Structure
 
 ```text
@@ -72,8 +56,8 @@ LLM-Semantic-Router/
 ├── notebooks/                  # Jupyter notebooks for exploration
 ├── reports/                    # Generated analysis reports
 ├── src/                        # Source code
-│   ├── data_collection/        # CLO1 scripts
-│   ├── features/               # CLO2 feature engineering logic
+│   ├── data_collection/        # Data collection scripts
+│   ├── features/               # Feature engineering logic
 │   ├── models/                 # Training and inference scripts
 │   └── unsupervised/           # Unsupervised learning exploration
 ├── router_logs.db              # Main SQLite database
@@ -95,18 +79,11 @@ cd LLM-Semantic-Router
 pip install -r requirements.txt
 ```
 
-### 3. Running CLO Scripts
-Each stage of the project can be executed via its respective script:
-
-**CLO1: Data Collection**
-```bash
-python src/data_collection/clo1_data_collection.py
-```
-
-**CLO2: Feature Engineering**
-```bash
-python src/features/CLO2_feature_engineering.py
-```
+### 3. Running the pipeline
+The maintained implementation is in `lightweight-query-routing/`. Follow its
+README for dataset download, training, evaluation, prediction, and robustness
+commands. The legacy exploratory scripts under `src/` are retained for
+reference only.
 
 ---
 
@@ -121,8 +98,9 @@ python src/features/CLO2_feature_engineering.py
 
 ## 🤝 Contributing
 Contributions are welcome! To ensure consistency, please follow these guidelines:
-- **Branch Naming**: Use `feature/cloX-description` or `fix/issue-description`.
-- **New CLOs**: Add your script to the appropriate subdirectory in `src/` and update the Progress Table in this README.
+- **Branch Naming**: Use `feature/description` or `fix/issue-description`.
+- Add new functionality to the appropriate source subdirectory and document the
+  command needed to run it in this README.
 
 ---
 

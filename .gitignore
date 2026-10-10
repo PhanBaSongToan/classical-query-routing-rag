@@ -4,3 +4,5 @@
 .env
 data/
 notebooks-training/data/
+!lightweight-query-routing/configs/
+!lightweight-query-routing/configs/structural_patterns.json

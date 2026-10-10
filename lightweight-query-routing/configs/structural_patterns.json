@@ -1,0 +1,10 @@
+{
+  "question_words": ["who", "what", "when", "where", "why", "how", "which"],
+  "negation_words": ["not", "no", "never", "neither", "nor", "without", "cannot", "can't", "doesn't", "don't", "isn't", "wasn't", "weren't"],
+  "clause_conjunctions": ["and", "or", "but", "because", "although", "while", "since", "that", "which"],
+  "comparative_regex": "\\b(compare|compared|comparison|difference|different|versus|vs\\.?|more than|less than|similar|unlike)\\b",
+  "temporal_regex": "\\b(before|after|during|since|until|when|while|first|then|later|previously|currently|recently|year|month|day|date)\\b",
+  "aggregation_regex": "\\b(all|overall|summarize|summary|summarise|main points|key points|in general|collectively|across)\\b",
+  "causal_regex": "\\b(why|because|cause|caused|reason|lead to|led to|resulted in|therefore)\\b",
+  "procedural_regex": "\\b(how to|steps|step-by-step|procedure|process|method|way to|instructions|explain how)\\b"
+}
