@@ -1,114 +1,68 @@
 # Classical Query Routing for Adaptive RAG
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-latest-orange.svg)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/status-in--progress-yellow.svg)](#installation--usage)
+Auditable reproduction and non-deep-learning extension of the query-routing
+baseline reported in [Lightweight Query Routing for Adaptive RAG](https://arxiv.org/abs/2604.03455).
+The maintained implementation is in [`lightweight-query-routing/`](lightweight-query-routing/).
 
-An auditable classical query router for selecting retrieval strategies in
-retrieval-augmented generation systems while tracking quality, robustness, and
-simulated cost.
+## What this repository contains
 
----
+- Query-only routing among `single_hop`, `multi_hop`, and `summary` labels.
+- Fold-local TF-IDF, character, structural, NB-SVM, dimensionality-reduction,
+  boosting, and out-of-fold stacking experiments.
+- Reproduction, robustness, leakage-audit, and cost-simulation reports.
+- The paper source and compiled PDF under [`paper/`](paper/).
 
-## 📋 Table of Contents
-- [Problem Statement](#-problem-statement)
-- [Dataset](#-dataset)
-- [Project Structure](#-project-structure)
-- [Installation & Usage](#-installation--usage)
-- [Team Members](#-team-members)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
+The router predicts a route recommendation only. It does not execute retrieval,
+generation, or external LLM API calls. Simulated costs are relative benchmark
+weights, not measured billing, latency, or answer quality.
 
----
+## Quick start
 
-## 💡 Problem Statement
-As Large Language Models (LLMs) become central to modern applications, organizations face a critical trade-off between **cost** and **capability**. Routing every simple query (e.g., "What time is it?") to a high-cost, high-latency API like GPT-4 is inefficient. 
+```powershell
+Set-Location .\lightweight-query-routing
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev,extended-classical]"
+python -m pip install -r requirements-lock.txt
+git lfs install
+git lfs pull
+```
 
-The **LLM Semantic Router** solves this by acting as a gateway that:
-1. **Analyzes** the complexity of incoming prompts.
-2. **Routes** "Tier 1" (simple) prompts to lightweight local models.
-3. **Escalates** "Tier 2" (complex) prompts to powerful cloud-based APIs.
+Download the public dataset:
 
-This approach significantly reduces operational costs while maintaining high-quality responses for complex tasks.
+```powershell
+python -m pip install huggingface_hub
+python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Chaplain0908/RAGRouter', repo_type='dataset', allow_patterns='data/*/Question.json', local_dir=r'data\raw\ragrouter-dataset')"
+$data = (Resolve-Path "data\raw\ragrouter-dataset\data").Path
+```
 
----
+Then follow [`lightweight-query-routing/README.md`](lightweight-query-routing/README.md)
+for audit, reproduction, robustness, prediction, and benchmark commands.
 
-## 📊 Dataset
-The project utilizes a cleaned version of the **LMSYS Chatbot Arena** dataset.
-- **Size**: 17,708 labeled records.
-- **Source**: `router_logs.db` (SQLite).
-- **Labels**:
-    - `Tier_1_Local`: Easy/basic prompts (e.g., simple questions, greetings).
-    - `Tier_2_API`: Hard/complex prompts (e.g., coding tasks, complex reasoning, multi-step logic).
+## Main findings
 
----
+The order-preserving reproduction obtains 0.807558 accuracy and 0.806758
+macro-F1, below the reference paper's reported 0.932 and 0.928. Under the
+declared ten-seed shuffled protocol, the selected extended ensemble obtains
+0.9521 accuracy and 0.9478 macro-F1. These values use different evaluation
+protocols and must not be presented as an exact same-fold superiority claim.
 
-## 📂 Project Structure
+## Repository layout
 
 ```text
-LLM-Semantic-Router/
-├── data/                       # Data storage
-│   ├── raw/                    # Raw downloads
-│   ├── processed/              # Cleaned/Engineered data
-│   └── external/               # Third-party data
-├── models/                     # Saved model artifacts (e.g., .pkl files)
-├── notebooks/                  # Jupyter notebooks for exploration
-├── reports/                    # Generated analysis reports
-├── src/                        # Source code
-│   ├── data_collection/        # Data collection scripts
-│   ├── features/               # Feature engineering logic
-│   ├── models/                 # Training and inference scripts
-│   └── unsupervised/           # Unsupervised learning exploration
-├── router_logs.db              # Main SQLite database
-├── README.md                   # Project documentation
-└── .gitignore                  # Git exclusion rules
+lightweight-query-routing/  package, scripts, tests, reports, and artifact
+paper/                       LaTeX source, figures, PDF, and reproducibility docs
+models/                      small tracked baseline artifacts
+LICENSE                      project license
 ```
 
----
+Raw benchmark files and large generated experiment outputs are intentionally not
+committed. See the package README for dataset provenance, seeds, leakage audit,
+and limitations.
 
-## ⚙️ Installation & Usage
+## License and contact
 
-### 1. Prerequisites
-Ensure you have Python 3.8 or higher installed.
-
-### 2. Clone and Install
-```bash
-git clone https://github.com/your-username/LLM-Semantic-Router.git
-cd LLM-Semantic-Router
-pip install -r requirements.txt
-```
-
-### 3. Running the pipeline
-The maintained implementation is in `lightweight-query-routing/`. Follow its
-README for dataset download, training, evaluation, prediction, and robustness
-commands. The legacy exploratory scripts under `src/` are retained for
-reference only.
-
----
-
-## 👥 Team Members
-1. **[Name Placeholder]** - Role/Contribution
-2. **[Name Placeholder]** - Role/Contribution
-3. **[Name Placeholder]** - Role/Contribution
-4. **[Name Placeholder]** - Role/Contribution
-5. **[Name Placeholder]** - Role/Contribution
-
----
-
-## 🤝 Contributing
-Contributions are welcome! To ensure consistency, please follow these guidelines:
-- **Branch Naming**: Use `feature/description` or `fix/issue-description`.
-- Add new functionality to the appropriate source subdirectory and document the
-  command needed to run it in this README.
-
----
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## ✉️ Contact
-**Phan Ba Song Toan**  
-GitHub: [@PhanBaSongToan](https://github.com/PhanBaSongToan)
+The project source is released under the license in [`LICENSE`](LICENSE).
+The downloaded benchmark remains subject to its dataset and upstream-corpus
+licenses. Contact: Phan Ba Song Toan, FPT University, Da Nang, Vietnam.

@@ -95,14 +95,14 @@ python -m lightweight_router audit `
   --data $data `
   --expect-ragrouter-bench `
   --query-field question --label-field type `
-  --domain-field domain --id-field id `
+  --id-field id `
   --output reports
 
 python -m lightweight_router reproduce `
   --data $data `
   --expect-ragrouter-bench `
   --query-field question --label-field type `
-  --domain-field domain --id-field id `
+  --id-field id `
   --protocol official_raw_labels `
   --output reports
 
@@ -110,7 +110,7 @@ python -m lightweight_router extended-benchmark `
   --data $data `
   --expect-ragrouter-bench `
   --query-field question --label-field type `
-  --domain-field domain --id-field id `
+  --id-field id `
   --output reports\extended_classical_benchmark `
   --artifact-output artifacts\extended_classical_benchmark
 ```
@@ -122,14 +122,14 @@ python -m lightweight_router robustness `
   --data $data `
   --expect-ragrouter-bench `
   --query-field question --label-field type `
-  --domain-field domain --id-field id `
+  --id-field id `
   --output reports\robustness
 
 python -m lightweight_router forensic `
   --data $data `
   --expect-ragrouter-bench `
   --query-field question --label-field type `
-  --domain-field domain --id-field id `
+  --id-field id `
   --dataset-repo "C:\path\to\ragrouter-dataset" `
   --output reports\forensic_reproduction
 ```
@@ -256,18 +256,6 @@ The official order-preserving reproduction produced pooled TF-IDF/SVM accuracy
 `0.807558` and macro-F1 `0.806758`, versus the paper's `0.932` and `0.928`.
 The downloaded dataset fingerprint was
 `c3566f9dca7c322861767df5b5384b97f25fac82344ef84615027cc67f77c7a9`.
-
-## Streamlit demonstration
-
-If the optional demo files are present, install and run:
-
-```powershell
-python -m pip install -r demo\requirements-demo.txt
-python -m streamlit run demo\streamlit_app.py
-```
-
-The dashboard calls the existing prediction API and does not retrain or replace
-the model.
 
 Before publishing generated reports, remove machine-specific paths:
 
