@@ -5,8 +5,8 @@ build. The working tree was intentionally not committed by the assistant.
 
 | Item | Value |
 |---|---|
-| Base repository commit | `7ab8e4892dfa6d585d9a6163157a39686d5ec331` |
-| Working tree | Dirty; final submission must record the commit after review |
+| Final artifact commit | `6eeaf43fecd7e4146e019799aa87191b0c5d197f` (paper, figures, paired-ablation code/report) |
+| Working tree | LaTeX auxiliary/log files may change after compilation; source/artifact commit is recorded above |
 | Python | 3.14.5 |
 | Dataset records | 7,727 |
 | Dataset SHA-256 | `c3566f9dca7c322861767df5b5384b97f25fac82344ef84615027cc67f77c7a9` |
@@ -15,5 +15,5 @@ build. The working tree was intentionally not committed by the assistant.
 | Tests | `54 passed` |
 | Paper build | `pdflatex + bibtex + pdflatex + pdflatex`, exit code 0 |
 
-The final author should replace the base commit with the final commit hash after
-all files are reviewed and committed.
+The final author should rerun `git rev-parse HEAD` after any later manuscript
+edit and update this row if the submitted source changes.
