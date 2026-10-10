@@ -19,15 +19,17 @@ supervisor, workshop, conference, or journal.
   summary is `reports/paired_ablation/PAIRED_ABLATION_REPORT.md`.
 - [ ] Run the exact paired comparison of the paper baseline and the selected
   post-selection ensemble on identical folds, seeds, tokenization, and
-  preprocessing. The analysis tool is
-  `scripts/paired_comparison.py` and must receive two aligned OOF CSV files.
+  preprocessing. `scripts/final_paired_ablation.py` now defines this run, but
+  the nested ten-seed execution remains computationally pending; no result is
+  claimed until its OOF files and paired test complete.
 - [x] Add confidence intervals and the paired sign-flip permutation result for
   the fixed-candidate comparison. The selected-ensemble comparison remains
   open until its aligned OOF file is available.
 - [ ] Add an ablation table for word features, character features, structural
   features, NB-SVM, boosting, and stacking. Word, character, structural, and
-  NB-SVM rows are now protocol-matched; boosting and stacking still require
-  fold-local OOF reruns.
+  NB-SVM rows are protocol-matched; `scripts/final_paired_ablation.py` defines
+  the boosting and stacking rows, but their fold-local OOF rerun is still
+  pending.
 
 ## Reproduction record
 
@@ -78,7 +80,8 @@ supervisor, workshop, conference, or journal.
 ## Submission package
 
 - [x] Compile `main.tex` successfully locally with pdfLaTeX; Overleaf upload
-  confirmation remains an external check.
+  confirmation remains an external check. A clean upload archive is
+  `paper/overleaf_upload_latest.zip`.
 - [x] Confirm every citation appears in `references.bib` and every table/figure
   is referenced in the text.
 - [ ] Check the venue's page limit, anonymization rules, template, and deadline.
