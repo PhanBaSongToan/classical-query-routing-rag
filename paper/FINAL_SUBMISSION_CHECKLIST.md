@@ -38,8 +38,9 @@ supervisor, workshop, conference, or journal.
 - [x] Record the model artifact path and Git LFS requirement.
 - [x] Record the 54-test result.
 - [x] Add the final dataset fingerprint produced by the current checkout.
-- [ ] Replace the provisional base commit with the final repository commit hash
-  after review and commit.
+- [x] Record the final source/artifact commit hash in
+  `REPRODUCIBILITY_MANIFEST.md` (`6eeaf43fecd7e4146e019799aa87191b0c5d197f`).
+  The later metadata-only manifest commit is reported by `git rev-parse HEAD`.
 - [x] Record the provisional base commit, working-tree state, lockfile, and
   build command in `REPRODUCIBILITY_MANIFEST.md`.
 - [x] Save the final generated CSV/JSON reports for the exact run used in the
