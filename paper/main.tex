@@ -38,6 +38,30 @@ This paper has two goals. First, it audits the reproducibility of the classical 
 
 The paper does not claim an exact numerical reproduction of the reference result. Instead, it reports which conclusions are stable, which depend on protocol details, and how the extended router performs under an explicitly declared evaluation design.
 
+Figure~\ref{fig:pipeline} summarizes the query-side routing interface evaluated in this work.
+
+The selected classical router's performance and robustness across evaluation
+protocols are shown in Figure~\ref{fig:robustness}. Shuffled evaluation gives
+the strongest score, while source-order and leave-one-domain-out protocols
+expose the sensitivity of the result to ordering and domain shift.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/query_routing_pipeline.pdf}
+\caption{Query routing pipeline. Query text is transformed into fold-local lexical and structural features, classified by a non-deep-learning router, and mapped to an illustrative RAG strategy.}
+\label{fig:pipeline}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/classical_router_performance.pdf}
+\caption{Performance and robustness of the selected classical router. Grouped
+bars show accuracy and macro-F1 under shuffled, source-order, grouped, and
+leave-one-domain-out evaluation. Dashed and dotted lines mark the respective
+paper references.}
+\label{fig:robustness}
+\end{figure}
+
 \section{Related Work}
 Adaptive retrieval methods route queries according to estimated complexity or retrieval need. Adaptive-RAG uses a learned complexity classifier to select among retrieval behaviors \cite{jeong2024}. RAGRouter-Bench provides a complementary setting in which queries from four corpora are annotated with single-hop, multi-hop, or summarization types and evaluated against multiple RAG paradigms \cite{wang2026}. The reference study establishes query-side classical baselines on this benchmark \cite{bansal2026}.
 
@@ -45,7 +69,23 @@ This work focuses on reproducibility and classical extension. It does not replac
 
 \section{Reference Setting and Reproduction Audit}
 \subsection{Dataset and labels}
-RAGRouter-Bench contains 7,727 queries from MuSiQue, QuALITY, UltraDomain legal, and GraphRAG-Bench medical. The canonical target labels are \texttt{single\_hop}, \texttt{multi\_hop}, and \texttt{summary}; they correspond to factual, reasoning, and summarization query types, respectively. The label distribution is imbalanced, so accuracy alone is insufficient.
+We use the public RAGRouter-Bench release distributed through Hugging Face
+\cite{ragrouter2026}. The release is marked MIT on its dataset card. After
+parsing the JSON records, the audit retained 7,727 valid examples with no
+missing questions or labels, no duplicate IDs, and no conflicting duplicate
+labels. The four source domains are MuSiQue (3,356), GraphRAG-Bench medical
+(1,896), UltraDomain legal (1,277), and QuALITY (1,198). The input fields are
+the question, domain, and record identifier; answer text and supporting facts
+are retained only for audit purposes and are excluded from every feature
+pipeline.
+
+The canonical target labels are \texttt{single\_hop}, \texttt{multi\_hop}, and
+\texttt{summary}. Their counts are 2,320 (30.02\%), 4,086 (52.88\%), and 1,321
+(17.10\%), respectively, so the label distribution is imbalanced and accuracy
+alone is insufficient. The audit found 105 exact duplicate questions, all with
+the same label, and no exact duplicate questions across domains. The printed
+domain counts in the reference paper sum to 7,729 rather than 7,727; we retain
+the public release count and report this accounting discrepancy explicitly.
 
 \subsection{Reference protocol}
 The reference study evaluates TF--IDF, MiniLM embeddings, and structural features with five classifier families under five-fold stratified cross-validation. Its best reported configuration is TF--IDF with an SVM, at 0.932 accuracy and 0.928 macro-F1. Its cost simulation maps single-hop queries to NaiveRAG (1.4$\times$), multi-hop queries to HybridRAG (2.8$\times$), and summary queries to IterativeRAG (3.5$\times$) \cite{bansal2026}.
@@ -107,6 +147,8 @@ Table~\ref{tab:main} compares the reference result with the extended selections.
 
 \begin{table}[t]
 \centering
+\small
+\setlength{\tabcolsep}{2.5pt}
 \caption{Reference, official reproduction, and extended routing results.}
 \label{tab:main}
 \begin{tabular}{lccc}
@@ -123,11 +165,46 @@ Extended OOF ensemble & 0.9521 & 0.9478 & 28.76\% \\
 
 The selected ensemble has per-class recall of 0.9493 for single-hop, 0.9605 for multi-hop, and 0.9310 for summary queries. Its under-routing rate is 0.0252. The cost-quality constrained router obtains 0.9260 accuracy, 0.9206 macro-F1, 27.81\% savings, and 0.0234 under-routing; its lower savings are accepted because the selection retains the declared quality and risk constraints.
 
+As an additional protocol-matched check, we reran the reference TF--IDF/RBF-SVM
+and a predeclared word--character--structural LinearSVC on the same ten shuffled
+five-fold seeds. Across seeds, the extension's paired accuracy gain averaged
+0.0189. Per-seed bootstrap 95\% intervals for the accuracy difference ranged
+from [0.0110, 0.0215] to [0.0142, 0.0261], and every 1,000-resample paired
+sign-flip test gave $p<0.001$. The corresponding macro-F1 intervals ranged from
+[0.0107, 0.0218] to [0.0150, 0.0257]. These tests compare the two fixed
+candidates and are not a significance claim for the post-selection ensemble.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\caption{Protocol-matched feature ablation under ten shuffled five-fold seeds.}
+\label{tab:ablation}
+\begin{tabular}{lcc}
+\toprule
+Feature family & Accuracy & Macro-F1 \\
+\midrule
+Word n-grams & 0.9276 & 0.9242 \\
+Character n-grams & 0.9287 & 0.9248 \\
+Word + character & 0.9409 & 0.9365 \\
+Word + character + structural & 0.9467 & 0.9421 \\
+NB--SVM (word + character) & 0.9311 & 0.9251 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ablation shows that combining word, character, and structural features is
+more effective than either lexical family alone under this fixed protocol.
+Boosting and stacking remain part of the broader benchmark report, but their
+isolated contribution has not been re-estimated in this paired ablation.
+
 \subsection{Robustness}
 Table~\ref{tab:stress} shows that evaluation protocol substantially changes the apparent performance. Source-order five-fold evaluation obtains 0.8455 accuracy and 0.8448 macro-F1. Grouping normalized queries produces 0.9453 accuracy and 0.9413 macro-F1, while grouping structural templates produces 0.9436 accuracy and 0.9393 macro-F1. Leave-one-domain-out evaluation obtains 0.6406 accuracy and 0.6729 macro-F1, with under-routing increasing to 0.2579.
 
 \begin{table}[t]
 \centering
+\small
+\setlength{\tabcolsep}{2.5pt}
 \caption{Stress evaluation of the selected extended ensemble.}
 \label{tab:stress}
 \begin{tabular}{lccc}
@@ -157,7 +234,25 @@ Several issues must be resolved before making a strong comparative claim. The ex
 
 The paper should be read as a reproducibility and robustness study rather than as evidence of production-level RAG cost reduction. The simulated savings do not measure latency, token billing, retrieval quality, answer quality, or safety. The current artifact classifies query text and returns a route recommendation; it does not validate the downstream RAG system selected by that recommendation.
 
+The Hugging Face dataset card identifies the released aggregation as MIT
+licensed, but that statement does not automatically establish the licensing
+terms of every underlying source corpus. Users redistributing the data should
+check the terms of MuSiQue, QuALITY, UltraDomain, and GraphRAG-Bench
+individually. The medical and legal examples are benchmark text, not clinical
+or legal advice, and the router should not be deployed as a decision-making
+system without a separate safety and privacy review.
+
 The accompanying repository contains the source implementation, benchmark reports, tests, and a saved prediction model. The dashboard is an interface over the existing prediction API; it does not retrain the model or change its routing logic.
+
+\section*{Data and Code Availability}
+The implementation, paper source, generated figures, tests, model artifact, and
+sanitized benchmark reports are available at
+\url{https://github.com/PhanBaSongToan/LLM-Semantic-Router}. The raw benchmark
+files are not redistributed in the repository; the evaluation scripts download
+or read a local copy of the public RAGRouter-Bench release. The reproducibility
+manifest records the dataset fingerprint, random seeds, dependency lockfile,
+and build commands. The final archival commit identifier should be recorded in
+that manifest immediately before publication.
 
 \section{Conclusion}
 This paper presented an auditable reproduction audit and an extended classical benchmark for query routing in adaptive RAG. The reference TF--IDF/SVM result could not be identified exactly from the public methodology, and its apparent performance is sensitive to cross-validation ordering. Under a fully declared repeated shuffled protocol, the extended OOF ensemble achieved 0.9521 accuracy and 0.9478 macro-F1 with approximately 28.76\% simulated savings. Robustness experiments show that source order and domain shift materially affect performance. The main conclusion is therefore methodological as well as empirical: lightweight query routers should be compared with explicit split definitions, leakage controls, and domain-transfer tests rather than with a single underspecified cross-validation number.
