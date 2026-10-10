@@ -6,3 +6,14 @@ data/
 notebooks-training/data/
 !lightweight-query-routing/configs/
 !lightweight-query-routing/configs/structural_patterns.json
+
+# LaTeX build products and local upload staging
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/overleaf_upload_latest/
+
+# Python build metadata
+**/*.egg-info/
