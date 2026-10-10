@@ -19,7 +19,7 @@ stratified five-fold seeds: `0, 1, 2, 3, 4, 13, 21, 42, 77, 100`.
 The reference TF-IDF/RBF-SVM and the fixed word-character-structural LinearSVC
 were evaluated on the same folds. The extension's mean paired accuracy gain was
 `0.018869`. Across the ten seeds, the bootstrap 95% interval endpoints ranged
-from `[0.011000, 0.021483]` to `[0.014236, 0.024719]`. Each 1,000-resample
+from `[0.011000, 0.021483]` to `[0.016044, 0.026142]`. Each 1,000-resample
 sign-flip permutation test returned `p < 0.001` (reported as zero by the finite
 Monte Carlo estimate).
 
