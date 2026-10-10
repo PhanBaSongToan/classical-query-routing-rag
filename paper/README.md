@@ -9,7 +9,7 @@ and does not change the benchmark, artifacts, or README.
 From PowerShell:
 
 ```powershell
-Set-Location "C:\Users\ACER\Code\LLM-Semantic-Router\paper"
+Set-Location ".\paper"
 .\compile.ps1
 ```
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.10)  10 OCT 2026 11:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.10)  10 OCT 2026 11:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -514,7 +514,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 57--61
  []
 
 
-Overfull \hbox (20.35847pt too wide) in paragraph at lines 110--120
+Overfull \hbox (20.35847pt too wide) in paragraph at lines 112--122
  [][] 
  []
 
@@ -541,7 +541,7 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 Here is how much of TeX's memory you used:
  12354 strings out of 467392
  198548 string characters out of 5406124
- 669456 words of memory out of 5000000
+ 669483 words of memory out of 5000000
  41328 multiletter control sequences out of 15000+600000
  673521 words of font info for 248 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -557,9 +557,9 @@ MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/ACER/AppData/Local/Programs/M
 iKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/ACER/AppData/Local/Programs/M
 iKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/ACER/AppData/Local/Programs/Mi
 KTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (3 pages, 153980 bytes).
+Output written on main.pdf (3 pages, 154144 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
+ 162 PDF objects out of 1000 (max. 8388607)
  33 named destinations out of 1000 (max. 500000)
  44161 words of extra memory for PDF output out of 51595 (max. 10000000)
 

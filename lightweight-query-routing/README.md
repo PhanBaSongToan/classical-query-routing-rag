@@ -25,7 +25,7 @@ surface and is required by the structural feature extractor.
 Run these commands from the directory containing `pyproject.toml`:
 
 ```powershell
-Set-Location "C:\Users\ACER\Code\LLM-Semantic-Router\lightweight-query-routing"
+Set-Location ".\lightweight-query-routing"
 
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -33,6 +33,13 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[dev,extended-classical]"
 git lfs install
 git lfs pull
+```
+
+For the verified environment, install the pinned packages after the editable
+project install:
+
+```powershell
+python -m pip install -r requirements-lock.txt
 ```
 
 If PowerShell blocks activation, run this once in the same PowerShell window:
@@ -57,6 +64,11 @@ domains and 7,727 records when `--expect-ragrouter-bench` is used:
 ```powershell
 $data = (Resolve-Path "data\raw\ragrouter-dataset\data").Path
 ```
+
+The dataset card currently declares an MIT license and documents the upstream
+RAGRouter-Bench citation. Verify that license and the licenses of the four
+upstream corpora again at submission time; this repository does not relicense
+those source datasets.
 
 ## Run a prediction
 
@@ -257,9 +269,17 @@ python -m streamlit run demo\streamlit_app.py
 The dashboard calls the existing prediction API and does not retrain or replace
 the model.
 
+Before publishing generated reports, remove machine-specific paths:
+
+```powershell
+python scripts\sanitize_public_reports.py reports
+```
+
 ## Scope and limitations
 
 This repository is a query-side classical routing study. It does not implement
 the complete answer-generation pipeline, does not use external LLM APIs, and
 does not establish that query type alone is sufficient for optimal corpus-aware
 RAG selection. Reproduction and extension results must be reported separately.
+Simulated costs are relative benchmark weights; they are not API billing,
+latency, retrieval quality, answer quality, or safety measurements.

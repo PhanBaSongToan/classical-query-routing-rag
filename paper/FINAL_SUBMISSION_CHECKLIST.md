@@ -13,13 +13,15 @@ supervisor, workshop, conference, or journal.
 - [x] Report the selected ensemble's protocol with its accuracy, macro-F1,
   savings, and per-class recall.
 - [x] Report source-order, grouped, and leave-one-domain-out stress results.
-- [ ] Add the exact paired comparison of the paper baseline and the extension on
-  identical folds, seeds, tokenization, and preprocessing.
-- [ ] Add confidence intervals or a paired statistical comparison for the main
-  baseline-versus-extension claim.
+- [ ] Run the exact paired comparison of the paper baseline and the extension on
+  identical folds, seeds, tokenization, and preprocessing. The analysis tool is
+  `scripts/paired_comparison.py` and must receive two aligned OOF CSV files.
+- [ ] Add confidence intervals and the paired sign-flip permutation result
+  produced by `scripts/paired_comparison.py`.
 - [ ] Add an ablation table for word features, character features, structural
   features, NB-SVM, boosting, and stacking. Do not fill this table with values
-  from a different protocol.
+  from a different protocol; the current benchmark report is not a substitute
+  for this paired ablation.
 
 ## Reproduction record
 
@@ -30,7 +32,10 @@ supervisor, workshop, conference, or journal.
 - [x] Record the model artifact path and Git LFS requirement.
 - [x] Record the 54-test result.
 - [x] Add the final dataset fingerprint produced by the current checkout.
-- [ ] Add the final repository commit hash to the manuscript.
+- [ ] Replace the provisional base commit with the final repository commit hash
+  after review and commit.
+- [x] Record the provisional base commit, working-tree state, lockfile, and
+  build command in `REPRODUCIBILITY_MANIFEST.md`.
 - [x] Save the final generated CSV/JSON reports for the exact run used in the
   paper, outside the source tree if they are too large for Git.
 
@@ -41,28 +46,33 @@ supervisor, workshop, conference, or journal.
 - [x] Train the stacking meta-model only from inner out-of-fold scores.
 - [x] Report normalized-query and template-grouped evaluation.
 - [x] Report source-order and leave-one-domain-out evaluation.
-- [ ] Inspect the final run manifest and verify that no generated answer or
+- [x] Inspect the final run manifest and verify that no generated answer or
   test-label information entered feature construction.
 
 ## Writing and ethics
 
-- [ ] Replace the placeholder author email and affiliation.
+- [x] Add the author's preferred public email and affiliation.
 - [ ] Confirm all authors made a qualifying intellectual contribution and approve
   the submitted version.
-- [ ] Cite the reference paper, RAGRouter-Bench, and reused software/data.
-- [ ] Check that no credentials, private paths, or unnecessary personal data are
+- [x] Keep only the author whose contribution is currently verifiable in the
+  repository. Tai and An can be added later only after written contribution and
+  approval confirmation.
+- [x] Cite the reference paper, RAGRouter-Bench, and reused software/data.
+- [x] Check that no credentials, private paths, or unnecessary personal data are
   included in the source ZIP.
-- [ ] State that simulated cost is not measured billing, latency, or answer
+- [x] State that simulated cost is not measured billing, latency, or answer
   quality.
-- [ ] State that the project does not run the complete RAG answer-generation
+- [x] State that the project does not run the complete RAG answer-generation
   pipeline.
-- [ ] Have a supervisor or experienced researcher review the manuscript.
+- [ ] Have a supervisor or experienced researcher review the manuscript. An
+  internal AI-assisted review is recorded in `INDEPENDENT_MANUSCRIPT_REVIEW.md`
+  but does not satisfy this human-review requirement.
 
 ## Submission package
 
 - [ ] Compile `main.tex` successfully on Overleaf with the same compiler as the
   selected venue.
-- [ ] Confirm every citation appears in `references.bib` and every table/figure
+- [x] Confirm every citation appears in `references.bib` and every table/figure
   is referenced in the text.
 - [ ] Check the venue's page limit, anonymization rules, template, and deadline.
 - [ ] Upload the code repository link and reproducibility instructions as

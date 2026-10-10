@@ -1,6 +1,6 @@
 # Dataset audit
 
-- Source: `C:\Users\ACER\Code\LLM-Semantic-Router\lightweight-query-routing\data\raw\ragrouter-dataset\data`
+- Source: `<local-path>`
 - SHA-256: `c3566f9dca7c322861767df5b5384b97f25fac82344ef84615027cc67f77c7a9`
 - Format: directory:jsonl_in_json_extension
 - Parsed / valid / invalid: 7727 / 7727 / 0

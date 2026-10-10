@@ -1,0 +1,12 @@
+# Generated from the verified reproduction environment (Python 3.14, Windows).
+# Install the project first, then use this file for an exact rerun.
+numpy==2.4.5
+pandas==3.0.3
+scipy==1.17.1
+scikit-learn==1.9.0
+matplotlib==3.10.9
+joblib==1.5.3
+pytest==9.1.1
+xgboost==3.3.0
+lightgbm==4.7.0
+catboost==1.2.10

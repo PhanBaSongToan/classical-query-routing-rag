@@ -8,9 +8,9 @@
 \title{Classical Query Routing for Adaptive Retrieval-Augmented Generation: Reproducibility, Robustness, and Cost-Aware Evaluation}
 
 \author{\IEEEauthorblockN{Phan Ba Song Toan}
-\IEEEauthorblockA{Independent Researcher\\
-Vietnam\\
-Email: \texttt{phanbasongtoan@example.com}}}
+\IEEEauthorblockA{FPT University\\
+Da Nang 550000, Vietnam\\
+Email: \texttt{phanbasongtoan112@gmail.com}}}
 
 \begin{document}
 \maketitle
@@ -58,6 +58,8 @@ Using the public Hugging Face release, the downloaded dataset had 7,727 records
 and SHA-256 fingerprint prefix \texttt{c3566f9dca7c}; the full fingerprint is
 preserved in the machine-readable audit report.
 We executed the documented raw-label protocol with order-preserving \texttt{StratifiedKFold(n\_splits=5, shuffle=False)}, word TF--IDF n-grams of order $(1,2)$, \texttt{min\_df=2}, sublinear term frequency, and an RBF SVM. The pooled result was 0.807558 accuracy and 0.806758 macro-F1, compared with the reported 0.932 and 0.928. Thus the reproduction is not numerically exact: the absolute gaps are 12.444 and 12.124 percentage points, respectively. The discrepancy is recorded as an audit finding rather than hidden by replacing the official protocol with a favorable split.
+
+The complete eight-configuration sweep is shown in Table~\ref{tab:official-sweep}.
 
 \begin{table}[t]
 \centering
