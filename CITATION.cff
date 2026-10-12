@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or the accompanying benchmark study, please cite the Zenodo record."
+title: "Classical Query Routing for Adaptive Retrieval-Augmented Generation: Reproducibility, Robustness, and Cost-Aware Evaluation"
+type: software
+authors:
+  - family-names: Phan
+    given-names: Ba Song Toan
+    affiliation: FPT University
+    email: phanbasongtoan112@gmail.com
+repository-code: "https://github.com/PhanBaSongToan/classical-query-routing-rag"
+url: "https://doi.org/10.5281/zenodo.23276765"
+doi: "10.5281/zenodo.23276765"
+date-released: 2026-10-10
+version: "1.0.0"
+license: MIT
+keywords:
+  - retrieval-augmented generation
+  - RAG
+  - query routing
+  - classical machine learning
+  - reproducibility
+  - robustness evaluation
+  - data leakage audit
+  - RAGRouter-Bench

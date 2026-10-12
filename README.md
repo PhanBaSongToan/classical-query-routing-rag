@@ -1,8 +1,25 @@
 # Classical Query Routing for Adaptive RAG
 
+**Classical Query Routing for Adaptive Retrieval-Augmented Generation: Reproducibility, Robustness, and Cost-Aware Evaluation**
+
+This repository accompanies the Zenodo preprint and contains the auditable
+implementation, experiment reports, figures, and paper sources:
+[Zenodo preprint and DOI](https://doi.org/10.5281/zenodo.23276765).
+
+**Abstract.** This work audits and extends a classical query-routing benchmark
+for retrieval-augmented generation (RAG). It reproduces the query-side setting
+under explicitly declared evaluation protocols, adds lexical, character, and
+structural classical features, and evaluates leakage-aware robustness under
+source-order, grouped, and leave-one-domain-out splits. The router predicts a
+retrieval strategy; it does not execute retrieval or answer generation.
+
 Auditable reproduction and non-deep-learning extension of the query-routing
 baseline reported in [Lightweight Query Routing for Adaptive RAG](https://arxiv.org/abs/2604.03455).
 The maintained implementation is in [`lightweight-query-routing/`](lightweight-query-routing/).
+
+**Topics:** `rag` · `query-routing` · `retrieval-augmented-generation` ·
+`classical-machine-learning` · `reproducibility` · `robustness-evaluation` ·
+`data-leakage` · `ragrouter-bench`
 
 ## What this repository contains
 
